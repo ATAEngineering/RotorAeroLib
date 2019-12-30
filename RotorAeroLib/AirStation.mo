@@ -37,7 +37,7 @@ model AirStation
   Real lambda(start = 0.15);
   Real lambda_c;
   //
-  outer Thrust thrust;
+  outer RotorAeroLib.Thrust thrust;
 equation
 //
   v_freestream_rotor = Modelica.Mechanics.MultiBody.Frames.resolve2(relativeFrame_resolve.R, thrust.v_freestream * thrust.n_freestream);
