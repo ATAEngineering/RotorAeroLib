@@ -118,9 +118,12 @@ equation
   delta_L = Ma_factor * AspectRatioFactor * tipLossFactor * 0.5 * thrust.rho * U ^ 2 * c * Cl * delta_r;
   delta_D = 0.5 * thrust.rho * U ^ 2 * c * Cd * delta_r;
 //
+  delta_Fx = 0;
   delta_Fz = delta_L * cos(alpha) + delta_D * sin(alpha);
   delta_Fy = delta_L * sin(alpha) - delta_D * cos(alpha);
   delta_Tx = 0;
+  delta_Ty = 0;
+  delta_Tz = 0;
 //
   annotation(
     Icon(graphics = {Polygon(origin = {-8, 7}, rotation = 10, fillColor = {150, 150, 150}, fillPattern = FillPattern.Solid, points = {{-76, -13}, {-12, 11}, {32, 13}, {70, 3}, {76, -13}, {-76, -13}}), Line(origin = {0.74, -25.32}, points = {{0, -19}, {0, 19}}, thickness = 0.5, arrow = {Arrow.None, Arrow.Open}, arrowSize = 5), Line(origin = {25.56, -20.36}, points = {{0, -19}, {0, 19}}, thickness = 0.5, arrow = {Arrow.None, Arrow.Open}, arrowSize = 5), Line(origin = {52.27, -15.41}, points = {{0, -19}, {0, 19}}, thickness = 0.5, arrow = {Arrow.None, Arrow.Open}, arrowSize = 5), Line(origin = {-25.7, -29.68}, points = {{0, -19}, {0, 19}}, thickness = 0.5, arrow = {Arrow.None, Arrow.Open}, arrowSize = 5), Line(origin = {-51.96, -34.19}, points = {{0, -19}, {0, 19}}, thickness = 0.5, arrow = {Arrow.None, Arrow.Open}, arrowSize = 5), Rectangle(extent = {{-100, 100}, {100, -100}})}));

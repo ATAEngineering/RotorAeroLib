@@ -30,8 +30,8 @@ model PartialAirStation
   SI.Angle[3] angles;
   SI.Angle theta;
   Real thetadot;
-  Real delta_Fz, delta_Fy;
-  Real delta_Tx;
+  Real delta_Fx, delta_Fz, delta_Fy;
+  Real delta_Tx, delta_Ty, delta_Tz;
   //
   Modelica.Mechanics.MultiBody.Sensors.AbsoluteSensor absoluteSensor(animation = false, get_angles = false, get_r = false, get_v = true, resolveInFrame = Modelica.Mechanics.MultiBody.Types.ResolveInFrameA.frame_resolve) annotation(
     HideResult = true,
@@ -65,19 +65,19 @@ equation
   force.torque = t;
 //
   if reverse_direction then
-    f[1] = 0;
+    f[1] = delta_Fx;
     f[2] = -delta_Fy;
     f[3] = delta_Fz;
     t[1] = delta_Tx;
-    t[2] = 0;
-    t[3] = 0;
+    t[2] = delta_Ty;
+    t[3] = delta_Tz;
   else
-    f[1] = 0;
+    f[1] = delta_Fx;
     f[2] = delta_Fy;
     f[3] = delta_Fz;
     t[1] = delta_Tx;
-    t[2] = 0;
-    t[3] = 0;
+    t[2] = delta_Ty;
+    t[3] = delta_Tz;
   end if;
 //
   annotation(

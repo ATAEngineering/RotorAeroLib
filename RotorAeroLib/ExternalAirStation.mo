@@ -11,5 +11,8 @@ model ExternalAirStation
   
 equation
   [delta_Fy, delta_Fz, delta_Tx] = AirStation_external(r,v_rotor,theta,thetadot);
+  delta_Fx = 0;
+  delta_Ty = 0;
+  delta_Tz = 0;
   
 end ExternalAirStation;
