@@ -6,7 +6,7 @@ BY ATA ENGINEERING, INC.
 ALL RIGHTS RESERVED
 */
 
-model Thrust
+model RotorAeroLib_Globals
   import SI = Modelica.SIunits;
   parameter SI.Length R "Blade tip radius";
   parameter SI.Length R_cutout "Root cutout radius";
@@ -33,11 +33,11 @@ equation
   omega = omega_in;
   Vtip = R*abs(omega);
   annotation(
-    defaultComponentName = "thrust",
+    defaultComponentName = "RALglb",
     defaultComponentPrefixes = "inner",
-    missingInnerMessage = "No \"thrust\" component is defined. A default thrust component with the default parameters will be used. If this is not desired, drag a Thrust block into the top level of your model.",
+    missingInnerMessage = "No \"RALglb\" component is defined. A default RotorAeroLib_Globals component with the default parameters will be used. If this is not desired, drag a RotorAeroLib_Globals block into the top level of your model.",
     Documentation(info = "<html>
 <p>This model provides full-rotor variables to be used by individual AirStation blocks.
 </p>
 </html>"));
-end Thrust;
+end RotorAeroLib_Globals;

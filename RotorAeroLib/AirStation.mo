@@ -18,7 +18,7 @@ model AirStation
   parameter Real Cd_alpha2 = 0.0;
   //
   SI.Velocity[3] v_freestream_rotor;
-  SI.Acceleration a_rotor3 if thrust.useUnsteadyAero;
+  SI.Acceleration a_rotor3 if RALglb.useUnsteadyAero;
   Real U_perp(start = 1.0);
   Real U3(start = 1.0);
   Real U_inflow;
@@ -28,25 +28,25 @@ model AirStation
   Real Ma "Mach number";
   Real AspectRatio;
   Real Ma_factor, AspectRatioFactor, tipLossFactor;
-  Real V_nondim if thrust.useUnsteadyAero "Non-dimensional velocity";
-  Real unsteady_x1(start = 0.0) if thrust.useUnsteadyAero;
-  Real unsteady_x2(start = 0.0, fixed = true) if thrust.useUnsteadyAero;
-  Real unsteady_x2dot(start = 0.0, fixed = true) if thrust.useUnsteadyAero;
-  Real Cl_noncirc if thrust.useUnsteadyAero;
-  Real Cl_circ if thrust.useUnsteadyAero;
+  Real V_nondim if RALglb.useUnsteadyAero "Non-dimensional velocity";
+  Real unsteady_x1(start = 0.0) if RALglb.useUnsteadyAero;
+  Real unsteady_x2(start = 0.0, fixed = true) if RALglb.useUnsteadyAero;
+  Real unsteady_x2dot(start = 0.0, fixed = true) if RALglb.useUnsteadyAero;
+  Real Cl_noncirc if RALglb.useUnsteadyAero;
+  Real Cl_circ if RALglb.useUnsteadyAero;
   Real lambda(start = 0.15);
   Real lambda_c;
   //
-  outer RotorAeroLib.Thrust thrust;
+  outer RotorAeroLib.RotorAeroLib_Globals RALglb;
 equation
 //
-  v_freestream_rotor = Modelica.Mechanics.MultiBody.Frames.resolve2(relativeFrame_resolve.R, thrust.v_freestream * thrust.n_freestream);
+  v_freestream_rotor = Modelica.Mechanics.MultiBody.Frames.resolve2(relativeFrame_resolve.R, RALglb.v_freestream * RALglb.n_freestream);
 //
-  if thrust.useInflowCorrection then
-    lambda_c = abs(v_rotor[3] - v_freestream_rotor[3]) / thrust.R / abs(thrust.omega);
-    lambda = homotopy(sqrt(abs((thrust.sigma * Cl_alpha / 16 - lambda_c / 2) ^ 2 + thrust.sigma * Cl_alpha / 8 * orientation_factor * theta * r[1] / thrust.R)) - (thrust.sigma * Cl_alpha / 16 - lambda_c / 2), v_freestream_rotor[3] / thrust.Vtip);
+  if RALglb.useInflowCorrection then
+    lambda_c = abs(v_rotor[3] - v_freestream_rotor[3]) / RALglb.R / abs(RALglb.omega);
+    lambda = homotopy(sqrt(abs((RALglb.sigma * Cl_alpha / 16 - lambda_c / 2) ^ 2 + RALglb.sigma * Cl_alpha / 8 * orientation_factor * theta * r[1] / RALglb.R)) - (RALglb.sigma * Cl_alpha / 16 - lambda_c / 2), v_freestream_rotor[3] / RALglb.Vtip);
 //
-    U_inflow = lambda * thrust.Vtip;
+    U_inflow = lambda * RALglb.Vtip;
     U_perp = v_rotor[3] + U_inflow;
 //    
   else
@@ -73,13 +73,13 @@ equation
 //  This is based on state-space circulatory terms of Wagner's function (R.T. Jones' fit)
 //  as detailed in Leishman's Principles of Helicopter Aerodynamics (pg. 464).
 //
-  if thrust.useUnsteadyAero then
+  if RALglb.useUnsteadyAero then
     V_nondim = 2 * U / c;
     der(unsteady_x1) = unsteady_x2;
     der(unsteady_x2) = (-0.01375 * V_nondim ^ 2 * unsteady_x1) - 0.3455 * V_nondim * unsteady_x2 + alpha;
     unsteady_x2dot = der(unsteady_x2);
     Cl_circ = Cl_alpha * (0.006825 * V_nondim ^ 2 * unsteady_x1 + 0.10805 * V_nondim * unsteady_x2) + 0.25 * Cl_alpha * alpha;
-    if thrust.useUnsteadyNoncircAero then
+    if RALglb.useUnsteadyNoncircAero then
       a_rotor3 = der(v_rotor[3]);
       // The full calculation can be expensive/troublesome, so ignoring the higher order term as an approximation is the option (switch what is commented out here as necessary)
 //      Cl_noncirc = Modelica.Constants.pi*b*(orientation_factor*thetadot/U + a_rotor3/U^2 + orientation_factor*b*a*der(thetadot)/(2*U^2));
@@ -94,29 +94,29 @@ equation
   end if;
   Cd = Cd0 + Cd_alpha * alpha + Cd_alpha2 * alpha ^ 2;
 //
-  if thrust.useMachCorrection then
-    Ma = U / thrust.c;
+  if RALglb.useMachCorrection then
+    Ma = U / RALglb.c;
     Ma_factor = 1 / sqrt(1 - Ma ^ 2);
   else
     Ma = 0.0;
     Ma_factor = 1.0;
   end if;
 //
-  AspectRatio = 0.75 * thrust.R / c;
-  if thrust.useAspectRatioCorrection then
+  AspectRatio = 0.75 * RALglb.R / c;
+  if RALglb.useAspectRatioCorrection then
     AspectRatioFactor = AspectRatio / (AspectRatio + 2);
   else
     AspectRatioFactor = 1.0;
   end if;
 //
-  if thrust.useTipLossCorrection then
-    tipLossFactor = tanh((1 - r[1] / thrust.R) / (1 - thrust.mu));
+  if RALglb.useTipLossCorrection then
+    tipLossFactor = tanh((1 - r[1] / RALglb.R) / (1 - RALglb.mu));
   else
     tipLossFactor = 1.0;
   end if;
 //
-  delta_L = Ma_factor * AspectRatioFactor * tipLossFactor * 0.5 * thrust.rho * U ^ 2 * c * Cl * delta_r;
-  delta_D = 0.5 * thrust.rho * U ^ 2 * c * Cd * delta_r;
+  delta_L = Ma_factor * AspectRatioFactor * tipLossFactor * 0.5 * RALglb.rho * U ^ 2 * c * Cl * delta_r;
+  delta_D = 0.5 * RALglb.rho * U ^ 2 * c * Cd * delta_r;
 //
   delta_Fx = 0;
   delta_Fz = delta_L * cos(alpha) + delta_D * sin(alpha);

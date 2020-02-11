@@ -22,7 +22,7 @@ model RotorBladeAssembly
   parameter Real shaft_length = 0.08898774 "Distance from gimbal to blades and tip mass (m)";
   parameter Real tip_mass = 9.6919;
   //
-  outer Thrust thrust;
+  outer RotorAeroLib_Globals RALglb;
   Modelica.Mechanics.MultiBody.Interfaces.Frame_resolve relativeFrame_resolve annotation(
     Placement(visible = true, transformation(origin = {-100, 80}, extent = {{16, -16}, {-16, 16}}, rotation = 0), iconTransformation(origin = {-100, 80}, extent = {{16, -16}, {-16, 16}}, rotation = 0)));
   Modelica.Mechanics.MultiBody.Parts.FixedTranslation tipMassOffset(animation = false, r = {shaft_length, 0, 0}) annotation(
@@ -31,7 +31,7 @@ model RotorBladeAssembly
     Placement(visible = true, transformation(origin = {-72, -50}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
   Modelica.Blocks.Interfaces.RealInput collective annotation(
     Placement(visible = true, transformation(origin = {-120, -80}, extent = {{-20, -20}, {20, 20}}, rotation = 0), iconTransformation(origin = {-120, -80}, extent = {{-20, -20}, {20, 20}}, rotation = 0)));
-  RotorAeroLib.RotorBlade[numBlade] blade(each Cd_0 = Cd_0, each Cd_alpha = Cd_alpha, each Cd_alpha2 = Cd_alpha2, each Cl_0 = Cl_0, each Cl_alpha = Cl_alpha, each Cl_alpha2 = Cl_alpha2, each N = N, each radius = thrust.R, each root_cutout = thrust.R_cutout, each chord = thrust.blade_chord, each blade_density = blade_density, each orientation_ccw = orientation_ccw, each rigid = rigid, each shaft_length = shaft_length) annotation(
+  RotorAeroLib.RotorBlade[numBlade] blade(each Cd_0 = Cd_0, each Cd_alpha = Cd_alpha, each Cd_alpha2 = Cd_alpha2, each Cl_0 = Cl_0, each Cl_alpha = Cl_alpha, each Cl_alpha2 = Cl_alpha2, each N = N, each radius = RALglb.R, each root_cutout = RALglb.R_cutout, each chord = RALglb.blade_chord, each blade_density = blade_density, each orientation_ccw = orientation_ccw, each rigid = rigid, each shaft_length = shaft_length) annotation(
     Placement(visible = true, transformation(origin = {-8, 0}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
     //
   Modelica.Mechanics.MultiBody.Parts.FixedRotation fixedRotation1a(angle = 90.0, animation = false, n = {0, 1, 0}, r = {0, 0, 0}) annotation(

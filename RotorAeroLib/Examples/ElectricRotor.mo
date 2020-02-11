@@ -19,7 +19,7 @@ model ElectricRotor
   parameter Real twist75 = 35.0 "Twist at 3/4 span (deg) (for setting collective shift)";
   Real AdvRatio;
   //
-  inner RotorAeroLib.Thrust thrust(N_blade = 4, R = 0.25719, R_cutout = 0.0707, blade_chord = 0.05557, mu = 0.99, n_freestream = n_freestream, rho(displayUnit = "kg/m3") = 1.1596, useInflowCorrection = false, useMachCorrection = false, useTipLossCorrection = false, useUnsteadyAero = false, useUnsteadyNoncircAero = false, v_freestream = v_freestream) annotation(
+  inner RotorAeroLib.RotorAeroLib_Globals RALglb(N_blade = 4, R = 0.25719, R_cutout = 0.0707, blade_chord = 0.05557, mu = 0.99, n_freestream = n_freestream, rho(displayUnit = "kg/m3") = 1.1596, useInflowCorrection = false, useMachCorrection = false, useTipLossCorrection = false, useUnsteadyAero = false, useUnsteadyNoncircAero = false, v_freestream = v_freestream) annotation(
     Placement(visible = true, transformation(origin = {-70, -70}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
   Modelica.Blocks.Interfaces.RealInput Voltage annotation(
     Placement(visible = true, transformation(origin = {-120, 80}, extent = {{-20, -20}, {20, 20}}, rotation = 0), iconTransformation(origin = {-120, 80}, extent = {{-20, -20}, {20, 20}}, rotation = 0)));
@@ -82,6 +82,6 @@ equation
     Line(points = {{42, -54}, {50, -54}, {50, 10}, {50, 10}}));
   connect(pylonMass.frame_a, drive.frame_b) annotation(
     Line(points = {{78, 34}, {60, 34}, {60, 0}}, color = {95, 95, 95}));
-  thrust.omega_in = drive.w;
-  AdvRatio = -Modelica.Constants.pi * thrust.v_freestream / drive.w / thrust.R;
+  RALglb.omega_in = drive.w;
+  AdvRatio = -Modelica.Constants.pi * RALglb.v_freestream / drive.w / RALglb.R;
 end ElectricRotor;
